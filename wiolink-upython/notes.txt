@@ -75,3 +75,9 @@ True
 >>> ap_if.ifconfig()
 ('192.168.4.1', '255.255.255.0', '192.168.4.1', '208.67.222.222')
 >>>
+
+
+
+1.6. WiFi
+After a fresh install and boot the device configures itself as a WiFi access point (AP) that you can connect to. The ESSID is of the form MicroPython-xxxxxx where the x’s are replaced with part of the MAC address of your device (so will be the same everytime, and most likely different for all ESP8266 chips). The password for the WiFi is micropythoN (note the upper-case N). Its IP address will be 192.168.4.1 once you connect to its network. WiFi configuration will be discussed in more detail later in the tutorial.
+
