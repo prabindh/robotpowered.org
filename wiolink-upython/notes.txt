@@ -1,0 +1,54 @@
+Create conda env:
+conda create -n wiolink python=3.4
+
+pip install esptool
+
+WIOLINK serial driver:
+ UART driver from - and install 64bit version.
+ https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers
+
+ After connecting the board to the PC USB port, now getting COM5 in device manager !
+
+ - Download latest esp binary from micropython site - 
+ http://micropython.org/download#esp8266
+
+ - erase
+ esptool.py --port COM5 erase_flash
+esptool.py v2.8
+Serial port COM5
+Connecting....
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+Crystal is 26MHz
+MAC: 3c:71:bf:2c:4d:02
+Uploading stub...
+Running stub...
+Stub running...
+Erasing flash (this may take a while)...
+Chip erase completed successfully in 6.0s
+Hard resetting via RTS pin...
+
+- burn new flash
+esptool --port COM5 --baud 115200 write_flash --flash_size=detect --flash_mode=dio --flash_freq=40m 0 esp8266-20191220-v1.12.bin
+
+(wiolink) wiolink>esptool --port COM5 --baud 115200 write_flash --flash_size=detect --flash_mode=dio --flash_freq=40m 0 esp8266-20191220-v1.12.bin
+esptool.py v2.8
+Serial port COM5
+Connecting....
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+Crystal is 26MHz
+MAC: 3c:71:bf:2c:4d:02
+Uploading stub...
+Running stub...
+Stub running...
+Configuring flash size...
+Auto-detected Flash size: 4MB
+Flash params set to 0x0240
+Compressed 619828 bytes to 404070...
+Wrote 619828 bytes (404070 compressed) at 0x00000000 in 35.8 seconds (effective 138.5 kbit/s)...
+Hash of data verified.
+Leaving...
+Hard resetting via RTS pin...
