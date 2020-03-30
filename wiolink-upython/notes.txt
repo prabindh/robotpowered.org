@@ -52,3 +52,26 @@ Wrote 619828 bytes (404070 compressed) at 0x00000000 in 35.8 seconds (effective 
 Hash of data verified.
 Leaving...
 Hard resetting via RTS pin...
+
+====
+No need to remove the cable after programming.
+Getting the python prompt - 
+- Download Putty
+- Configure to the serial prompt (COM5 in current case), and 115200 baud rate
+Connect. The below output can be seen.
+
+MicroPython v1.12 on 2019-12-20; ESP module with ESP8266
+Type "help()" for more information.
+>>>
+>>> print ('hello wio')
+hello wio
+>>> import machine
+>>> machine.freq()
+80000000
+>>> import network
+>>> ap_if = network.WLAN(network.AP_IF)
+>>> ap_if.active()
+True
+>>> ap_if.ifconfig()
+('192.168.4.1', '255.255.255.0', '192.168.4.1', '208.67.222.222')
+>>>
