@@ -153,3 +153,13 @@ Schematic of Wiolink - http://wiki.seeedstudio.com/Wio_Link/ - Schematic PDF
 import machine
 machine.Pin(0).value()
 This pin is pulled up high, so returns 0 if key is pressed. It works.
+
+====
+ampy debugging:
+incase main.py does not exit and gets stuck, there is no way from ampy to stop it.
+Close the terminal.
+Open Putty, and connect to board.
+in the Putty prompt, press ctrl+c.
+Then remove the bad file, via
+import os
+os.remove('main.py')
