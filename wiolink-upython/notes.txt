@@ -165,3 +165,8 @@ import os
 os.remove('main.py')
 
 https://docs.micropython.org/en/latest/esp8266/quickref.html
+
+====
+Triggering from py on PC:
+from pyautogui import press
+press('space') --> Sends space kb event to windows
