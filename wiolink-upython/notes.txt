@@ -132,7 +132,7 @@ pip install adafruit-ampy
 
 (wiolink) ampy -p COM5 -b 115200 put main.py
 (wiolink) ampy -p COM5 -b 115200 run main.py
-====
+====  
 POST req from station
 
 How to get a key press from default wiolink without any Grove/other accessory:
@@ -163,3 +163,5 @@ in the Putty prompt, press ctrl+c.
 Then remove the bad file, via
 import os
 os.remove('main.py')
+
+https://docs.micropython.org/en/latest/esp8266/quickref.html
