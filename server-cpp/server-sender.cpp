@@ -1,5 +1,5 @@
-// Prabindh Sundareson 2020
-// Age of the lockdown
+// wiolink-server.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
 
 #include "pch.h"
 #include <iostream>
@@ -9,19 +9,22 @@ static httplib::Server svr;
 void pressSpace()
 {
 	INPUT ip;
+	std::vector<INPUT> ips;
+
 	ip.type = INPUT_KEYBOARD;
 	ip.ki.time = 0;
 	ip.ki.dwFlags = 0;
 	ip.ki.wScan = 0; 
-	
+	ip.ki.dwExtraInfo = 0;
+
 	ip.ki.wVk = VK_SPACE;
 
-	ip.ki.dwExtraInfo = 0;
-	SendInput(1, &ip, sizeof(INPUT));
-
+	ips.push_back(ip);
 	// Release the key
-	ip.ki.dwFlags = KEYEVENTF_KEYUP;
-	SendInput(1, &ip, sizeof(INPUT));
+	ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+	ips.push_back(ip);
+
+	SendInput(ips.size(), &ips[0], sizeof(INPUT));
 }
 
 int main()
