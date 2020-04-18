@@ -20,7 +20,7 @@ var bounceValue=0.1;
 var gravity=0.005;
 var leftLane=-1;
 var rightLane=1;
-var middleLane=0;
+var middleLane=0.5;
 var currentLane;
 var clock;
 var jumping;
@@ -33,21 +33,60 @@ var particleCount=20;
 var explosionPower =1.06;
 var particles;
 //var stats;
-var scoreText;
 var score;
 var hasCollided;
 
 //Sphere or robot
 var bLoadSphere = false;
 var bModelLoaded = false;
-var loader = new THREE.GLTFLoader();
+var loader;
+var sound;
+var listener;
+var audioLoader;
+var crashListener;
+var crashSound;
+var crashAudioLoader;
+var bAudioStarted = false;
+var loadingText = document.createElement('div');
 
-init();
+function initAudio()
+{
+    // create an AudioListener and add it to the camera
+    camera.add( listener );
+
+    // create a global audio source
+    sound = new THREE.Audio( listener );
+
+    // load a sound and set it as the Audio object's buffer
+    audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'car+geardown.wav', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( true );
+        sound.setVolume( 0.5 );
+        sound.play();
+    });
+    
+    // Create crash
+    // create an AudioListener and add it to the camera
+    crashListener = new THREE.AudioListener();
+    camera.add( crashListener );
+
+    // create a global audio source
+    crashSound = new THREE.Audio( crashListener );
+
+    // load a sound and set it as the Audio object's buffer
+    crashAudioLoader = new THREE.AudioLoader();  
+}
 
 function init() {
+    loader = new THREE.GLTFLoader();
+    listener = new THREE.AudioListener();
+        
 	// set up the scene
 	createScene();
-
+    
+    //addThumbnail();
+    
 	//call game loop
 	update();
 }
@@ -72,7 +111,7 @@ function createScene(){
     renderer.shadowMap.enabled = true;//enable shadow
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setSize( sceneWidth, sceneHeight );
-    dom = document.getElementById('TutContainer');
+    dom = document.getElementById('GameContainer');
 	dom.appendChild(renderer.domElement);
 	//stats = new Stats();
 	//dom.appendChild(stats.dom);
@@ -91,41 +130,64 @@ function createScene(){
 	
 	camera.position.z = 6.5;
 	camera.position.y = 2.5;
-	/*orbitControl = new THREE.OrbitControls( camera, renderer.domElement );//helper to rotate around in scene
-	orbitControl.addEventListener( 'change', render );
-	orbitControl.noKeys = true;
-	orbitControl.noPan = true;
-	orbitControl.enableZoom = false;
-	orbitControl.minPolarAngle = 1.1;
-	orbitControl.maxPolarAngle = 1.1;
-	orbitControl.minAzimuthAngle = -0.2;
-	orbitControl.maxAzimuthAngle = 0.2;
-	*/
+
 	window.addEventListener('resize', onWindowResize, false);//resize callback
 
 	document.onkeydown = handleKeyDown;
-	
-	scoreText = document.createElement('div');
-	scoreText.style.position = 'absolute';
-	//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-	scoreText.style.width = 100;
-	scoreText.style.height = 100;
-	//scoreText.style.backgroundColor = "blue";
-	scoreText.innerHTML = "0";
-	scoreText.style.top = 50 + 'px';
-	scoreText.style.left = 10 + 'px';
-	document.body.appendChild(scoreText);
-  
+    document.ontouchstart = handleKeyDown;
+    
+    var linkText = document.createElement('div');
+	linkText.style.position = 'absolute';
+	linkText.style.width = 300;
+	linkText.style.height = 10;
+	linkText.style.top = 160 + 'px';
+	linkText.style.left =10 + 'px';
+	document.body.appendChild(linkText);
+    var aTag = document.createElement('a');
+    aTag.setAttribute('href',"https://hackaday.io/project/170864-dinotron-wiolink/details");
+    aTag.innerText = "Project Page";
+    linkText.appendChild(aTag);
+
+	loadingText.style.position = 'absolute';
+	loadingText.style.width = 300;
+	loadingText.style.height = 10;
+    loadingText.innerHTML = "Loading Model please wait...";
+	loadingText.style.top = 150 + 'px';
+	loadingText.style.left =10 + 'px';
+	document.body.appendChild(loadingText);
+
+
+  var thumbText = document.createElement('img');
+	thumbText.style.position = 'absolute';
+	thumbText.style.width = 100;
+	thumbText.style.height = 100;
+    thumbText.src = "wiolink.jpg";
+	thumbText.style.top = 50 + 'px';
+	thumbText.style.left =10 + 'px';
+    thumbText.onclick=function loadVideo() {window.open("https://www.youtube.com/watch?v=l_MuLb2sMuQ");};
+    thumbText.style.zIndex = "2";
+    
+	document.body.appendChild(thumbText);
+
   var infoText = document.createElement('div');
 	infoText.style.position = 'absolute';
 	infoText.style.width = 100;
-	infoText.style.height = 100;
-	infoText.style.backgroundColor = "yellow";
-	infoText.innerHTML = "UP - Jump, Left/Right - Move";
-	infoText.style.top = 10 + 'px';
-	infoText.style.left = 10 + 'px';
+	infoText.style.height = 30;
+	infoText.style.backgroundColor = "grey";
+	infoText.innerHTML = "Anykey-Jmp L/R-Move";
+	infoText.style.top = 8 + 'px';
+	infoText.style.left =10 + 'px';
 	document.body.appendChild(infoText);
 }
+function addThumbnail()
+{
+    var texture = new THREE.TextureLoader().load( 'wiolink.jpg' );
+    var geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
+    var material = new THREE.MeshBasicMaterial( { map: texture } );
+    mesh = new THREE.Mesh( geometry, material );
+    scene.add( mesh );
+}
+
 function addExplosion(){
 	particleGeometry = new THREE.Geometry();
 	for (var i = 0; i < particleCount; i ++ ) {
@@ -150,6 +212,14 @@ function createTreesPool(){
 }
 function handleKeyDown(keyEvent){
 	if(jumping)return;
+    
+    if (!bAudioStarted)
+    {
+        // setup audio
+        initAudio();
+        bAudioStarted = true;
+    }
+    
 	var validMove=true;
 	if ( keyEvent.keyCode === 37) {//left
 		if(currentLane==middleLane){
@@ -168,7 +238,9 @@ function handleKeyDown(keyEvent){
 			validMove=false;	
 		}
 	}else{
-		if ( keyEvent.keyCode === 32){ //38){//up, jump
+		//if ( keyEvent.keyCode === 32){ //38){//up, jump
+        //any key
+        {
 			bounceValue=0.1;
 			jumping=true;
 		}
@@ -196,7 +268,7 @@ function addHero(){
 }
 
 function addGltfHero() {
-    loader.load('CesiumMilkTruck.glb', 
+    loader.load('CesiumMilkTruck.glb',  //'BrainStem.glb', 
                             function (gltf)
                             {
                                 heroSphere = gltf.scene;
@@ -204,14 +276,21 @@ function addGltfHero() {
                                 heroSphere.receiveShadow = true;
                                 heroSphere.castShadow=true;
                                 heroSphere.position.y=heroBaseY;
-                                heroSphere.position.z=2.8;
-                                heroSphere.scale.x=0.2;
-                                heroSphere.scale.y=0.2;
-                                heroSphere.scale.z=0.2;
+                                heroSphere.position.z=0.8;
+                                heroSphere.scale.x=0.5;
+                                heroSphere.scale.y=0.6;
+                                heroSphere.scale.z=0.8;
                                 currentLane=middleLane;
                                 heroSphere.position.x=currentLane;
 
                                 bModelLoaded = true;
+                                loadingText.innerHTML = "Completed. Press any key to start";
+                                
+                                imgDiv = document.getElementById('ImageContainer');
+                                imgDiv.parentNode.removeChild(imgDiv);                                
+                                imgDiv = document.getElementById('LoadingContainer');
+                                imgDiv.parentNode.removeChild(imgDiv);                                
+                                
                             }
     );
 }
@@ -406,7 +485,11 @@ function update(){
     rollingGroundSphere.rotation.x += rollingSpeed;
     if (bModelLoaded)
     {
-        //heroSphere.rotation.x -= heroRollingSpeed;
+        heroSphere.rotation.z += 0.001;
+        if (heroSphere.rotation.z > 0.5)
+        {
+            heroSphere.rotation.z = -0.5;
+        }
         if(heroSphere.position.y<=heroBaseY){
             jumping=false;
             bounceValue=(Math.random()*0.04)+0.005;
@@ -420,7 +503,6 @@ function update(){
     	addPathTree();
     	if(!hasCollided){
 			score+=2*treeReleaseInterval;
-			scoreText.innerHTML=score.toString();
 		}
     }
     doTreeLogic();
@@ -429,6 +511,10 @@ function update(){
 	requestAnimationFrame(update);//request next update
 }
 function doTreeLogic(){
+    
+    if (!bModelLoaded)
+        return;
+    
 	var oneTree;
 	var treePos = new THREE.Vector3();
 	var treesToRemove=[];
@@ -468,6 +554,9 @@ function doExplosionLogic(){
 	particleGeometry.verticesNeedUpdate = true;
 }
 function explode(){
+    
+    if (!bModelLoaded)
+    return;
 	particles.position.y=2;
 	particles.position.z=4.8;
 	particles.position.x=heroSphere.position.x;
@@ -480,6 +569,16 @@ function explode(){
 	}
 	explosionPower=1.07;
 	particles.visible=true;
+    
+    if (bAudioStarted)
+    {
+        crashAudioLoader.load( "MirrorShattering-SoundBible.com-1752328245.wav", function( buffer ) {
+            crashSound.setBuffer( buffer );
+            crashSound.setLoop( false );
+            crashSound.setVolume( 2.5 );
+            crashSound.play();
+            });
+    }
 }
 function render(){
     renderer.render(scene, camera);//draw
@@ -496,3 +595,20 @@ function onWindowResize() {
 	camera.aspect = sceneWidth/sceneHeight;
 	camera.updateProjectionMatrix();
 }
+
+function loadGLTF()
+{
+    let scriptg = document.createElement('script');
+    scriptg.src = "Gltfloader.js"
+    document.head.append(scriptg);
+    scriptg.onload = function() {
+        init();
+    };
+}
+
+let script3 = document.createElement('script');
+script3.src = "three.min.js"
+document.head.append(script3);
+script3.onload = function() {
+    loadGLTF();
+};
