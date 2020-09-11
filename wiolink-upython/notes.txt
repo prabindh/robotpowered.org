@@ -1,4 +1,4 @@
-Create conda env:
+﻿Create conda env:
 conda create -n wiolink python=3.4
 
 pip install esptool
@@ -170,3 +170,11 @@ https://docs.micropython.org/en/latest/esp8266/quickref.html
 Triggering from py on PC:
 from pyautogui import press
 press('space') --> Sends space kb event to windows
+
+====
+Red and Yellow wires - on Grove connector - connected across push-switch.
+Readings do not change from GPIO14 when button pressed. 
+Strange happenings on GPIO12 (red LED starts on)
+
+So about to try REES52 ESP8266 NodeMcu WiFi Development Board
+https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/
