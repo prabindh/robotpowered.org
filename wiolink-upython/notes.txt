@@ -178,3 +178,39 @@ Strange happenings on GPIO12 (red LED starts on)
 
 So about to try REES52 ESP8266 NodeMcu WiFi Development Board
 https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/
+
+REES52 NodeMCU:
+
+(wiolink) C:>esptool --port COM5 --baud 115200 write_flash --flash_size=detect --flash_mode=dio --flash_freq=40m 0 esp8266-20191220-v1.12.bin
+esptool.py v2.8
+Serial port COM5
+Connecting....
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+Crystal is 26MHz
+MAC: 24:62:ab:0a:f8:83
+Uploading stub...
+Running stub...
+Stub running...
+Configuring flash size...
+Auto-detected Flash size: 4MB
+Flash params set to 0x0240
+Compressed 619828 bytes to 404070...
+Wrote 619828 bytes (404070 compressed) at 0x00000000 in 35.8 seconds (effective 138.3 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+====
+Had to perform below, to get working prompt
+ampy -p COM5 -b 115200 put main.py 
+====
+Open PUTTY on COM5/112500 and perform below
+
+import machine
+pin = machine.Pin(2, machine.Pin.OUT)
+pin.on()
+pin.off()
+
+Can see the blue LED off and on, ie, pin.on() makes LED off and pin.off makes LED on...
