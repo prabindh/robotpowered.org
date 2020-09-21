@@ -214,3 +214,25 @@ pin.on()
 pin.off()
 
 Can see the blue LED off and on, ie, pin.on() makes LED off and pin.off makes LED on...
+
+https://www.instructables.com/id/Control-LED-Using-PushButton-With-NodeMCU/
+Push Button connections :
+The first pin goes from one leg of the pushbutton through a pull-up resistor(here 10K Ohms) to the 5v supply.
+The second pin goes from the corresponding leg of the pushbutton to Ground (GND) pin.
+The third pin connects to a Digital I/O pin (here pin D0) which reads the button's state.
+
+ESP8266 - Has pins 1-16
+REES52 MAPPING  --> ESP
+D5, D6, D7, D8 --> GPIO14,12,13,15
+D1, D2 --> GPIO5, 4
+SD3, SD2 --> GPIO10, 9
+
+This works on REES board
+import machine
+p4 = machine.Pin(4, machine.Pin.IN)
+p4.value()
+0
+p4.value()   /// Now press switch connected to D2 aka GPIO4
+1
+p4.value() /// Release the switch back
+0
