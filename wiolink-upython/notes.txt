@@ -226,6 +226,7 @@ REES52 MAPPING  --> ESP
 D5, D6, D7, D8 --> GPIO14,12,13,15
 D1, D2 --> GPIO5, 4
 SD3, SD2 --> GPIO10, 9
+Also refer - https://circuit-diagramz.com/wp-content/uploads/2018/11/ESP8266-12e-Pinout-7.jpg
 
 This works on REES board
 import machine
