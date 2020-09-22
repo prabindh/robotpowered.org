@@ -237,3 +237,18 @@ p4.value()   /// Now press switch connected to D2 aka GPIO4
 1
 p4.value() /// Release the switch back
 0
+
+WIOLINK GPIO mapping: (Use Grove switch pull down connectors)
+Digital Port 0	GPIO 14
+Digital Port 1	GPIO 12
+Digital Port 2	GPIO 13
+
+GPIO15 is to be enabled ON, for all connector rails to be powered !!
+import machine
+p15 = machine.Pin(15, machine.Pin.OUT)
+p15.on()
+
+p14 = machine.Pin(14, machine.Pin.IN)
+p12 = machine.Pin(12, machine.Pin.IN)
+p13 = machine.Pin(13, machine.Pin.IN)
+p14.value() --> works fine.
