@@ -1,3 +1,4 @@
+WEMOS D1 R2:
 flash Memory: 4MB
 On-Board Switching Power Supply:
 Input Voltage Range: 9V to 12V
@@ -22,3 +23,5 @@ wemos markings: (in the board)
  ESP GPIO 2     = onboard LED (to check)
  ESP GPIO 4,5   = I2C (D1, D2) (confirmed)
  ESP 12-15      = SPI (D5-D8) (confirmed)
+====
+Keypad = DC 12V 4×4 16 Key Matrix Membrane Switch Keypad
