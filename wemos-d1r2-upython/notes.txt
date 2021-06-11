@@ -1,0 +1,24 @@
+flash Memory: 4MB
+On-Board Switching Power Supply:
+Input Voltage Range: 9V to 12V
+Output: 5V at 1A Max
+Using latest from - https://micropython.org/download/esp8266/ - https://micropython.org/resources/firmware/esp8266-20210418-v1.15.bin
+esptool.py --port COM6 erase_flash
+esptool.py --port COM6 --baud 460800 write_flash --flash_size=detect 0 esp8266-20210418-v1.15.bin
+6,7,8 are ValueError: invalid pin. 0-5,9,10,11, 12-16 are giving results
+	From https://docs.micropython.org/en/v1.11/esp32/quickref.html , so do not use ESP 6,7,8, 11
+ = ESP Pins 6, 7, 8, 11, 16, and 17 are used for connecting the embedded flash, and are not recommended for other uses
+
+So only use 0-5,9,10, 12-16 ?
+https://diyi0t.com/what-is-the-esp8266-pinout-for-different-boards/
+wemos markings: (in the board)
+ D1,D2 = I2C
+ D5-D8 = SPI
+ There are no pins after D0-D8 !!
+ So which micropython pins map to D0-D8 onboard ?
+ 
+ Known from https://www.instructables.com/Programming-the-WeMos-Using-Arduino-SoftwareIDE/
+ On the WeMos-D1R2 the on board LED is connected to EPS pin 2
+ ESP GPIO 2     = onboard LED (to check)
+ ESP GPIO 4,5   = I2C (D1, D2) (confirmed)
+ ESP 12-15      = SPI (D5-D8) (confirmed)
