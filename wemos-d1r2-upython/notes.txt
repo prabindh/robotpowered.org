@@ -25,3 +25,35 @@ wemos markings: (in the board)
  ESP 12-15      = SPI (D5-D8) (confirmed)
 ====
 Keypad = DC 12V 4×4 16 Key Matrix Membrane Switch Keypad
+==
+Connecting keypad and checking p4,p5 - always reads 1. 
+Only pin15 - reads 0.
+
+import machine
+p = machine.Pin(12, machine.Pin.IN)
+p.value()
+1
+>>> p = machine.Pin(15, machine.Pin.IN)
+>>> p.value()
+0
+
+Connections 4x1 keypad:
+D5-D8 - switches
+GND   - last pin (biggest track with black mark)
+
+Keypadbutton 4 --> D12 on ESP, D5 on WeMOS
+Keypadbutton 3 --> D13 on ESP, D6 on WeMOS
+Keypadbutton 2 --> D14 on ESP, D7 on WeMOS
+Keypadbutton 1 --> D15 on ESP, D8 on WeMOS
+
+import machine
+from utime import ticks_us, sleep_us
+p4 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
+p3 = machine.Pin(13, machine.Pin.IN, machine.Pin.PULL_UP)
+p2 = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
+p1 = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
+p4.value()
+p3.value()
+p2.value()
+p1.value()
+sleep(1000)
