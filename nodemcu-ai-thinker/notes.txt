@@ -1,0 +1,1 @@
+https://docs.ai-thinker.com/_media/esp32/docs/nodemcu-32s_product_specification.pdf

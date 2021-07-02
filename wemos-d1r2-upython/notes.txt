@@ -27,7 +27,7 @@ wemos markings: (in the board)
 Keypad = DC 12V 4×4 16 Key Matrix Membrane Switch Keypad
 ==
 Connecting keypad and checking p4,p5 - always reads 1. 
-Only pin15 - reads 0.
+Only pin15 - reads 0. 
 
 import machine
 p = machine.Pin(12, machine.Pin.IN)
@@ -47,13 +47,31 @@ Keypadbutton 2 --> D14 on ESP, D7 on WeMOS
 Keypadbutton 1 --> D15 on ESP, D8 on WeMOS
 
 import machine
-from utime import ticks_us, sleep_us
+from utime import sleep_ms
 p4 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
 p3 = machine.Pin(13, machine.Pin.IN, machine.Pin.PULL_UP)
 p2 = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
 p1 = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
-p4.value()
-p3.value()
-p2.value()
-p1.value()
-sleep(1000)
+while True:
+	p4.value()
+	p3.value()
+	p2.value()
+	p1.value()
+	sleep_ms(1000)
+
+import machine
+from utime import sleep_ms
+p4 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
+p3 = machine.Pin(13, machine.Pin.IN, machine.Pin.PULL_UP)
+p2 = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
+p1 = machine.Pin(5, machine.Pin.IN, machine.Pin.PULL_UP)
+
+p15 = machine.Pin(15, machine.Pin.OUT)
+p15.on()
+
+while True:
+	p4.value()
+	p3.value()
+	p2.value()
+	p1.value()
+	sleep_ms(1000)
